@@ -144,7 +144,7 @@ function firmwareVersions(status: MouseStatus): { mouse: string | null; receiver
   return { mouse, receiver }
 }
 
-/** A received-signal figure some drivers put in the link line ("2.4 GHz receiver · -42 dBm"); the hero shows it with the signal. */
+/** A received-signal figure some drivers put in the link line ("2.4 GHz receiver · -42 dBm"): left out of it. */
 const DBM = /\s*[·,-]?\s*(-\d+)\s*dBm/
 
 /** Driver jargon in a link line: protocol names, ids, report numbers and sensor parts say nothing to a person. */
@@ -250,7 +250,7 @@ function Device({ status, brand, readAt, busy, error, children }: { status: Mous
         ) : <span className="m-hero-image is-empty" />}
         {landed ? (
           <span key={landed} className="m-done" aria-hidden="true">
-            <svg className="m-done-check" viewBox="0 0 24 24"><path d="M5 12l5 5l10 -10" pathLength="1" /></svg>
+            <svg className="m-done-check" viewBox="0 0 24 24"><path d="M4.5 12.75L9.75 18L19.5 7.5" pathLength="1" /></svg>
           </span>
         ) : null}
         {error ? <p className="m-error" role="alert">{error}</p> : null}
@@ -294,26 +294,23 @@ function Device({ status, brand, readAt, busy, error, children }: { status: Mous
       </div>
       <p className="m-credit">
         Built on OpenMouse by snekxs
-        <svg className="m-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5 4.2 12.9A4.9 4.9 0 0 1 11.3 6.1l.7.7.7-.7a4.9 4.9 0 0 1 7.1 6.8z" /></svg>
+        <svg className="m-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21C5.5 16.5 2.5 13 2.5 9c0-3.2 2.4-5.5 5.2-5.5 1.8 0 3.3.9 4.3 2.4 1-1.5 2.5-2.4 4.3-2.4 2.8 0 5.2 2.3 5.2 5.5 0 4-3 7.5-9.5 12Z" /></svg>
       </p>
     </aside>
   )
 }
 
 /**
- * The charge as a figure over a gauge, red when low. Beside its name, what
- * the mouse says of it: Charging in green while it charges, Full or Almost
- * full, otherwise the cell's voltage when the driver reads it.
+ * The charge as a figure over a gauge, red when low. Beside its name, Charging
+ * in green while it charges, Full or Almost full.
  */
 function Battery({ status }: { status: MouseStatus }) {
   const battery = status.batteryPercent
   if (battery == null) return null
   const state = status.batteryState
   const charging = state.startsWith('Charging')
-  const mv = status.batteryVoltageMv
   const detail = charging ? <span className="m-stat-good">{state}</span>
-    : state === 'Full' || state === 'Almost full' ? <span className="m-stat-detail">{state}</span>
-      : mv ? <span className="m-stat-detail">{(mv / 1000).toFixed(2)} V</span> : null
+    : state === 'Full' || state === 'Almost full' ? <span className="m-stat-detail">{state}</span> : null
   return (
     <div className={`m-stat${battery <= 15 && !charging ? ' is-low' : ''}`} aria-label={`Battery ${battery}%${charging ? ', charging' : ''}`}>
       <span className="m-stat-label">Battery{detail}</span>
@@ -325,15 +322,14 @@ function Battery({ status }: { status: MouseStatus }) {
   )
 }
 
-/** The wireless signal as a word over four segments, its dBm beside the name when the mouse gives it; nothing on a wired mouse or one that does not report it. */
+/** The wireless signal as a word over four segments; nothing on a wired mouse or one that does not report it. */
 function Signal({ status }: { status: MouseStatus }) {
   const level = signalLevel(status)
   if (level == null) return null
   const bars = Math.max(1, Math.round(level * 4))
-  const dbm = DBM.exec(status.connectionDetail ?? '')?.[1]
   return (
-    <div className={`m-stat${level <= 0.25 ? ' is-low' : ''}`} aria-label={`Signal ${signalWord(level).toLowerCase()}${dbm ? `, ${dbm} dBm` : ''}`}>
-      <span className="m-stat-label">Signal{dbm ? <span className="m-stat-detail">{dbm.replace('-', '−')} dBm</span> : null}</span>
+    <div className={`m-stat${level <= 0.25 ? ' is-low' : ''}`} aria-label={`Signal ${signalWord(level).toLowerCase()}`}>
+      <span className="m-stat-label">Signal</span>
       <span className="m-stat-figure">{signalWord(level)}</span>
       <span className="m-gauge is-steps" aria-hidden="true">
         {[1, 2, 3, 4].map(i => <span key={i} className={`m-gauge-step${i <= bars ? ' is-on' : ''}`} />)}

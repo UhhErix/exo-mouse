@@ -532,7 +532,7 @@ export function Dropdown<T extends string | number>({ label, options, value, onC
         aria-controls={open ? listId : undefined} aria-activedescendant={open ? `${listId}-${active}` : undefined}
         disabled={disabled} onClick={() => (open ? close() : show())} onKeyDown={onKey}>
         <span className="m-select-value">{shown}</span>
-        <svg className="m-select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6l6 -6" /></svg>
+        <svg className="m-select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
       </button>
       {open ? createPortal(
         <ul ref={menu} id={listId} className="m-menu" role="listbox" aria-label={label} style={place}>

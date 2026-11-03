@@ -5,11 +5,11 @@
  */
 /* Exo's type (ui/src/fonts.css): Inter 4.1's official variable font, with Exo's features. */
 @font-face {
-  font-family: "Inter Variable";
+  font-family: "Geist";
   font-style: normal;
   font-display: block;
   font-weight: 100 900;
-  src: url("./fonts/InterVariable.woff2") format("woff2");
+  src: url("./fonts/Geist-Variable.woff2") format("woff2");
 }
 
 /* Exo's Liquid Glass (DESIGN.md › Glass), as Exo draws it in each Appearance. In Exo, Exo sends its own values for
@@ -165,8 +165,7 @@ html, body, #root {
 body {
   background: var(--bg);
   color: var(--ink);
-  font: var(--type-body)/1.45 'Inter Variable', system-ui, sans-serif;
-  font-feature-settings: "ss01" 1, "cv05" 1, "ss07" 1;
+  font: var(--type-body)/1.45 'Geist', 'Segoe UI Variable', system-ui, sans-serif;
   font-optical-sizing: auto;
   overflow: hidden;
 }
@@ -780,8 +779,8 @@ button:focus-visible, input:focus-visible, select:focus-visible {
   height: 12px;
   fill: none;
   stroke: var(--muted);
-  /* Tabler's chevron at Exo's line (ui/src/brand/icons.tsx), as Exo's menus draw it. */
-  stroke-width: 1.875;
+  /* Exo's chevron at its line (ui/src/brand/icons.tsx), as Exo's menus draw it. */
+  stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
   transition: transform 150ms var(--ease);
@@ -1373,8 +1372,8 @@ button:focus-visible, input:focus-visible, select:focus-visible {
   height: 12px;
   fill: none;
   stroke: currentColor;
-  /* Tabler's check at Exo's line (ui/src/brand/icons.tsx), drawn in. */
-  stroke-width: 1.875;
+  /* Exo's check at its line (ui/src/brand/icons.tsx), drawn in. */
+  stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 1;
@@ -1404,7 +1403,7 @@ button:focus-visible, input:focus-visible, select:focus-visible {
   aspect-ratio: 1;
   fill: none;
   stroke: var(--good);
-  stroke-width: 1.875;
+  stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 1;
@@ -1658,8 +1657,8 @@ button:focus-visible, input:focus-visible, select:focus-visible {
   margin-left: auto;
   padding-left: 16px;
   background: currentColor;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.15' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5l10 -10'/%3E%3C/svg%3E") right center / 14px no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.15' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5l10 -10'/%3E%3C/svg%3E") right center / 14px no-repeat;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 12.75L9.75 18L19.5 7.5'/%3E%3C/svg%3E") right center / 14px no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 12.75L9.75 18L19.5 7.5'/%3E%3C/svg%3E") right center / 14px no-repeat;
 }
 
 /* A mouse Exo can read but not set up yet (App.tsx › ReadOnly): one line and why, where the settings would be. */

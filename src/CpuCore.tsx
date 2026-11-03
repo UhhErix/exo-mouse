@@ -155,10 +155,10 @@ const n = (v: number) => v.toLocaleString('en-US')
 const count = (r: Reading) => `${n(r.missed)} of ${n(r.checked)} late`
 const where = (r: Reading) => `${r.cpu === null ? 'CPU not found' : `CPU ${r.cpu}`} · longest ${r.longest.toFixed(1)} ms`
 
-/** The last read's verdict in one line, or what the row does before there is one. */
-function verdict(core: Core | null): string {
+/** The last read's verdict in one line. */
+function verdict(core: Core | null): string | null {
   const test = core?.test
-  if (!test) return core?.stage === 'none' && core.detail ? core.detail : "Whether your mouse's input waits on a busy CPU"
+  if (!test) return core?.stage === 'none' ? core.detail ?? null : null
   const r = test.result
   if (test.verdict === 'fix') return `${count(r)} on CPU ${r.cpu ?? '?'}, a busy one`
   const why = test.detail.replace(FIGURES, '') || test.detail
