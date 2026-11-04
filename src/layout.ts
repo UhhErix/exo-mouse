@@ -76,6 +76,9 @@ export function useSections() {
     const observer = new ResizeObserver(() => setSize(`${room.clientWidth}x${b.clientHeight}`))
     observer.observe(room)
     observer.observe(b)
+    // Exo sending its rail (host-look.ts) plans again.
+    const railed = () => setSize(`${room.clientWidth}x${b.clientHeight}|${performance.now()}`)
+    window.addEventListener('exo-rail', railed)
     // A panel's own content changing (profiles loaded, a row added) plans again, once per frame.
     let frame = 0
     const changed = new MutationObserver(() => {
@@ -83,7 +86,7 @@ export function useSections() {
       frame = requestAnimationFrame(() => setSize(`${room.clientWidth}x${b.clientHeight}|${performance.now()}`))
     })
     if (stack.current) changed.observe(stack.current, { childList: true, subtree: true, characterData: true })
-    return () => { observer.disconnect(); changed.disconnect(); cancelAnimationFrame(frame) }
+    return () => { observer.disconnect(); changed.disconnect(); cancelAnimationFrame(frame); window.removeEventListener('exo-rail', railed) }
   }, [])
 
   useLayoutEffect(() => {
@@ -93,7 +96,7 @@ export function useSections() {
     if (!s || !b || !room) return
     const panels = [...s.querySelectorAll<HTMLElement>(':scope > .m-panel')]
     panels.forEach((panel, i) => { if (!panel.style.getPropertyValue('--i')) panel.style.setProperty('--i', String(i + 1)) })
-    const key = `${size}|${scale()}|${panels.map(p => `${p.dataset.group}:${p.childElementCount}`).join(',')}`
+    const key = `${size}|${scale()}|${getComputedStyle(document.documentElement).getPropertyValue('--exo-rail')}|${panels.map(p => `${p.dataset.group}:${p.childElementCount}`).join(',')}`
     if (key === planned.current) return
     planned.current = key
     const breaks = [...s.querySelectorAll<HTMLElement>(':scope > .m-break')]
@@ -110,13 +113,16 @@ export function useSections() {
     const gap = GAP
     const pad = parseFloat(getComputedStyle(room).paddingLeft) + parseFloat(getComputedStyle(room).paddingRight)
     const width = room.clientWidth - pad
-    const columnFor = (count: number) =>
-      Math.round(Math.min(COLUMN_MAX * k, Math.max(COLUMN_MIN * k, (width - HERO_WANT * k - count * gap) / count)))
+    // In Exo the hero is the rail every device's page shares: the columns take all that's left, as many as hold COLUMN_MIN.
+    const rail = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--exo-rail')) || 0
+    const columnFor = (count: number) => rail
+      ? Math.max(COLUMN_MIN * k, Math.floor((width - rail - count * gap) / count))
+      : Math.round(Math.min(COLUMN_MAX * k, Math.max(COLUMN_MIN * k, (width - HERO_WANT * k - count * gap) / count)))
     let most = 1
-    while (most < MAX_COLUMNS && (most + 1) * (columnFor(most + 1) + gap) <= width - HERO_MIN * k) most++
-    // On a wide room, start at the column count that keeps the mouse within HERO_MAX.
-    let start = 1
-    while (start < most && width - start * (columnFor(start) + gap) > HERO_MAX) start++
+    while (most < MAX_COLUMNS && (most + 1) * (columnFor(most + 1) + gap) <= width - (rail || HERO_MIN * k)) most++
+    // On a wide room, start at the column count that keeps the mouse within HERO_MAX; on a rail, at the most it holds.
+    let start = rail ? most : 1
+    while (!rail && start < most && width - start * (columnFor(start) + gap) > HERO_MAX) start++
     const height = b.clientHeight
 
     // Sections in order; each is its panels.

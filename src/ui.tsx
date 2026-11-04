@@ -116,8 +116,8 @@ export function Spinner({ size = 14, label }: { size?: number; label?: string })
   return (
     <svg className="m-spinner" width={size} height={size} viewBox="0 0 16 16" fill="none"
       role={label ? 'status' : undefined} aria-label={label} aria-hidden={label ? undefined : true}>
-      <circle cx="8" cy="8" r="6.25" stroke="currentColor" strokeOpacity="0.22" strokeWidth="1.5" />
-      <path d="M8 1.75a6.25 6.25 0 0 1 6.25 6.25" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="8" cy="8" r="6.25" stroke="currentColor" strokeOpacity="0.22" strokeWidth="1.25" />
+      <path d="M8 1.75a6.25 6.25 0 0 1 6.25 6.25" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" />
     </svg>
   )
 }
@@ -532,7 +532,7 @@ export function Dropdown<T extends string | number>({ label, options, value, onC
         aria-controls={open ? listId : undefined} aria-activedescendant={open ? `${listId}-${active}` : undefined}
         disabled={disabled} onClick={() => (open ? close() : show())} onKeyDown={onKey}>
         <span className="m-select-value">{shown}</span>
-        <svg className="m-select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+        <svg className="m-select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 9.25L12 14.75L17.5 9.25" /></svg>
       </button>
       {open ? createPortal(
         <ul ref={menu} id={listId} className="m-menu" role="listbox" aria-label={label} style={place}>

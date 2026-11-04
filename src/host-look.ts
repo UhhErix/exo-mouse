@@ -48,11 +48,23 @@ const theme = (value: unknown, look?: unknown) => {
   }
 }
 
+/**
+ * The hero's width as Exo draws its other devices' (room.rail, px): one measure for every device's page in Exo. Standalone
+ * nothing sends it, and the mouse takes what the columns leave.
+ */
+const rail = (value: unknown) => {
+  const px = Number(value)
+  if (!Number.isFinite(px) || px < 200 || px > 1200) return
+  document.documentElement.style.setProperty('--exo-rail', `${px}px`)
+  window.dispatchEvent(new Event('exo-rail'))
+}
+
 export function followHostLook() {
   if (window.parent === window) return
   call('exo.textScale').then(reply => scale(reply.data), () => { })
   call('exo.motion').then(reply => motion(reply.data), () => { })
   call('exo.theme').then(reply => theme(reply.data, reply.look), () => { })
+  onHostEvent('room.rail', rail)
   onHostEvent('exo.textScale', data => scale((data as { scale?: unknown } | null)?.scale))
   onHostEvent('exo.motion', data => motion((data as { motion?: unknown } | null)?.motion))
   onHostEvent('exo.theme', data => {

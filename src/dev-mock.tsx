@@ -365,13 +365,18 @@ const PROFILES = {
  * Exo's CPU core (exo.mouseCore): Measure takes its 10 s and finds the mouse late on busy CPU 0 with CPU 6 quiet;
  * Give it its own core then waits on Windows' restart. ?core=set is after the restart, measured before and after.
  */
-const CORE_BEFORE = { rate: 1000, checked: 9951, missed: 40, longest: 2.1, p999: 2, refresh: true, cpu: 0 }
-const CORE_AFTER = { rate: 1000, checked: 9963, missed: 2, longest: 1.6, p999: 1.1, refresh: false, cpu: 6 }
+const CORE_BEFORE = { rate: 1000, checked: 9951, missed: 40, longest: 2.1, p999: 2, refresh: true, cpu: 0, flow: { median: 1, spread: 0.03, batched: 0.4, batch: 2, filled: 99.6, madeUp: 31, stretch: false } }
+const CORE_AFTER = { rate: 1000, checked: 9963, missed: 2, longest: 1.6, p999: 1.1, refresh: false, cpu: 6, flow: { median: 1, spread: 0.02, batched: 0, batch: 1, filled: 99.9, madeUp: 2, stretch: false } }
 let coreStage: 'none' | 'restart' | 'set' = params.get('core') === 'set' ? 'set' : 'none'
 let coreMeasured = false
+let coreRecorded = false
+let coreSpread = false
 
 function mockCore(action: unknown) {
   if (action === 'measure') coreMeasured = true
+  if (action === 'drivers') coreMeasured = coreRecorded = true
+  if (action === 'spread') coreSpread = true
+  if (action === 'unspread') coreSpread = false
   if (action === 'apply') coreStage = 'restart'
   if (action === 'undo') coreStage = 'none'
   const set = coreStage === 'set'
@@ -383,6 +388,16 @@ function mockCore(action: unknown) {
     cpu: coreStage === 'none' ? null : 6,
     better: set ? true : null,
     canUndo: coreStage !== 'none',
+    canName: coreMeasured && coreStage !== 'restart' && !set,
+    wireless: !coreMeasured ? null : { dropouts: 12, empty: 1.8, before: null, lines: ['12 dropouts across the test, 1.8% of slots empty.', 'Your Wi-Fi is on 2.4 GHz, channel 6, the band your mouse uses.', 'Try the receiver on a short USB extension, close to the mouse.', 'Exo reads the gaps between reports, not the radio.'] },
+    layout: coreSpread ? { offer: [], applied: 3, restart: true, canUndo: true } : {
+      offer: coreMeasured && !set ? [{ name: 'Intel Ethernet', kind: 'network adapter', cpu: 8 }, { name: 'HD Audio', kind: 'audio controller', cpu: 10 }, { name: 'xHCI', kind: 'USB controller', cpu: 12 }] : [],
+      applied: 0, restart: false, canUndo: false,
+    },
+    drivers: !coreRecorded ? null : { late: 38, explained: 31, cpu: 0, problem: null, names: [
+      { file: 'nvlddmkm.sys', gaps: 26, own: 1.8, gap: 2.1, product: 'NVIDIA Windows Kernel Mode Driver', version: '581.42', origin: 'Interrupts as Windows set them', path: false },
+      { file: 'ndis.sys', gaps: 5, own: 0.6, gap: 1.2, product: null, version: null, origin: null, path: false },
+    ] },
     before: coreStage === 'none' ? null : CORE_BEFORE,
     after: set ? CORE_AFTER : null,
     test: !coreMeasured ? null : set
@@ -404,7 +419,7 @@ function answerHost() {
         : m.method === 'exo.mouseCore' ? mockCore(action)
           : { ok: true }
     // The core's measure takes the host's 10 s; Windows' prompt behind its change, a moment.
-    const wait = action === 'measure' ? 10_000 : action ? 900 : 40
+    const wait = action === 'measure' || action === 'drivers' ? 10_000 : action ? 900 : 40
     window.setTimeout(() => window.dispatchEvent(new MessageEvent('message', { data: { exo: 'mouse', id: m.id, result }, source: window })), wait)
   }) as typeof window.postMessage
 }

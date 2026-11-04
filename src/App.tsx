@@ -250,7 +250,7 @@ function Device({ status, brand, readAt, busy, error, children }: { status: Mous
         ) : <span className="m-hero-image is-empty" />}
         {landed ? (
           <span key={landed} className="m-done" aria-hidden="true">
-            <svg className="m-done-check" viewBox="0 0 24 24"><path d="M4.5 12.75L9.75 18L19.5 7.5" pathLength="1" /></svg>
+            <svg className="m-done-check" viewBox="0 0 24 24"><path d="M5 12.5L10 17.5L19.5 8" pathLength="1" /></svg>
           </span>
         ) : null}
         {error ? <p className="m-error" role="alert">{error}</p> : null}
@@ -294,7 +294,7 @@ function Device({ status, brand, readAt, busy, error, children }: { status: Mous
       </div>
       <p className="m-credit">
         Built on OpenMouse by snekxs
-        <svg className="m-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21C5.5 16.5 2.5 13 2.5 9c0-3.2 2.4-5.5 5.2-5.5 1.8 0 3.3.9 4.3 2.4 1-1.5 2.5-2.4 4.3-2.4 2.8 0 5.2 2.3 5.2 5.5 0 4-3 7.5-9.5 12Z" /></svg>
+        <svg className="m-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.92 13.44A5 5 0 0 1 12 6.36A5 5 0 0 1 19.08 13.44L13.06 19.44A1.5 1.5 0 0 1 10.94 19.44L4.93 13.43Z" /></svg>
       </p>
     </aside>
   )
