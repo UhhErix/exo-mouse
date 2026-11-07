@@ -62,8 +62,13 @@ protocol library's drivers run unchanged.
 ## Changes to OpenMouse
 
 `scripts/patch-protocol.mjs` runs before every build and applies fixes to
-`@openmouse/protocol` 0.49.0 until upstream ships them. It stops the build when
+`@openmouse/protocol` 0.58.0 until upstream ships them. It stops the build when
 the library version changes, so a fixed release is noticed and its patch removed.
+
+Audit of the move from 0.49.0 to 0.58.0 (2026-11-07): no Finalmouse file changed. `dist/drivers/finalmouse` and
+`dist/finalmouse` are byte-identical in both; the shared files that changed (driver registry, vendor list, brand
+type, index) changed their other makers' lines; no line that names Finalmouse changed, except that the brand type gained other makers too. All three patch targets applied unchanged to 0.58.0, and the
+module builds and checks green on it.
 
 ## Build
 

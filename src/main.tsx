@@ -1,12 +1,12 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './mouse.css'
-import { installExoHid } from './exo-hid'
+import { DRIVER_VENDOR_IDS, installExoHid } from './exo-hid'
 import { App } from './App'
 import { followHostLook } from './host-look'
 
-// Every HID device Windows lists; the drivers' own support checks pick the mice.
-installExoHid([])
+// The drivers' vendors; the host lists nothing else, and the drivers' own support checks pick the mice.
+installExoHid(DRIVER_VENDOR_IDS)
 followHostLook()
 
 const root = createRoot(document.getElementById('root')!)
